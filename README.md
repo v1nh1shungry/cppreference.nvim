@@ -20,15 +20,15 @@ A deadly silly plugin for searching and viewing [cppreference](http://cppreferen
 
 * Dual view: your favorite browser, or [cppman](https://github.com/aitjcize/cppman)! You don't even have to leave dear neovim.
 
-* Fuzzy search (powered by [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)): what you can expect from a [vscode extension](https://github.com/Guyutongxue/VSC_CppReference) or a [browser extension](https://github.com/huhu/cpp-search-extension) is now available in the great neovim!
+* Fuzzy search (powered by [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)): what you can expect from [a vscode extension](https://github.com/Guyutongxue/VSC_CppReference) or [a browser extension](https://github.com/huhu/cpp-search-extension) is now available in the great neovim!
 
 # Installation
 
 1. Make sure you have `curl` installed and be available in `$PATH`.
 
-2. * if you use the browser, make sure `xdg-open` is available in `$PATH` which is used to open the browser.
+2. * If you use the browser, make sure `xdg-open` is available in `$PATH` which is used to open the browser.
    
-   * if you use `cppman`, make sure you have `cppman` installed and be available in `$PATH`. And make sure you have set the `cppman`'s source to `cppreference.com` (which is the default value. If you haven't modified this option after the installation you don't have to do anything).
+   * If you use `cppman`, make sure you have `cppman` installed and be available in `$PATH`. And make sure you have set the `cppman`'s source to `cppreference.com` (which is the default value. If you haven't modified this option after the installation you don't have to do anything).
 
 3. [lazy.nvim](https://github.com/folke/lazy.nvim):
    
@@ -53,25 +53,29 @@ require('cppreference').setup {
 
 # Usage
 
-* `require('cppreference').fuzzy_search(view)`:
-  Use `view` as the viewer despite the configuration. Again, `view` can be either `browser` or `cppman`. If the parameter is absent the configuration will be used.
+* `require('cppreference').fuzzy_search()`
 
-* `require('cppreference').update_index()`
+* `require('cppreference').open(keyword)`: find all entries contain `keyword`, if there is only one entry then directly open it. Otherwise launch a fuzzy search pane and let you select one of the related entries.
+
+* `require('cppreference').update_index()`: use `curl` to download the latest index used in the fuzzy search.
 
 # FAQ ~~(actually nobody asks)~~
 
 * **Q:** An entry exists in the fuzzy search pane, but `cppman` says it can't locate it?
+
   **A:** The plugin eventually relies on `cppman` to locate the page if you use `cppman` as the viewer, and `cppman` can only locate objects own an individual page. In this case you have to use the browser to open the URL, which can be found in the index file.
 
 # TODO
 
-- [ ] `require('cppreference').open(word)`: directly offer the keyword, useful to play with `expand('<cword>')`
+- [x] `require('cppreference').open(word)`: directly offer the keyword, useful to play with `expand('<cword>')`
 
 - [ ] Windows support
 
 - [x] Seriously it's much better to open [cppman](https://github.com/aitjcize/cppman) instead of browser, but it's kind of hard to hack in.
   
   - [ ] `keywordprg` and the `K` key support
+
+- [ ] Fuzzy search: better sorter
 
 # Credits
 

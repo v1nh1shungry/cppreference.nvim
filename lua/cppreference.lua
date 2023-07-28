@@ -124,14 +124,15 @@ local cppman = function(keyword)
   end))
 end
 
-M.fuzzy_search = function(view)
-  if job then
-    if not job:is_closing() then
-      info('Fetching the latest index, please wait until it finishes')
-      return
-    end
+local display = function(entry)
+  if options.view == 'browser' then
+    open_browser('https://en.cppreference.com/w/' .. entry.link)
+  else
+    cppman(entry.name)
   end
+end
 
+local telescope = function(entries)
   local pickers = require('telescope.pickers')
   local finders = require('telescope.finders')
   local conf = require('telescope.config').values
@@ -143,7 +144,7 @@ M.fuzzy_search = function(view)
     prompt_title = 'cppreference',
     sorter = conf.generic_sorter(opts),
     finder = finders.new_table {
-      results = index,
+      results = entries,
       entry_maker = function(entry)
         return {
           value = entry.link,
@@ -156,16 +157,49 @@ M.fuzzy_search = function(view)
       actions.select_default:replace(function()
         actions.close(prompt_bufnr)
         local selection = action_state.get_selected_entry()
-        view = view or options.view
-        if view == 'browser' then
-          open_browser('https://en.cppreference.com/w/' .. selection.value)
-        else
-          cppman(selection.display)
-        end
+        display({ name = selection.display, link = selection.value })
       end)
       return true
     end,
   }):find()
+end
+
+local is_updating = function()
+  if job then
+    if not job:is_closing() then
+      info('Fetching the latest index, please wait until it finishes')
+      return true
+    end
+  end
+  return false
+end
+
+M.open = function(keyword)
+  if is_updating() then
+    return
+  end
+  keyword = keyword or ''
+  local entries = {}
+  for _, entry in ipairs(index) do
+    if string.find(entry.name, keyword) then
+      entries[#entries + 1] = entry
+    end
+  end
+  if #entries == 0 then
+    error("No manual for '" .. keyword .. "'")
+    return
+  elseif #entries == 1 then
+    display({ name = entries[1].name, link = entries[1].link })
+  else
+    telescope(entries)
+  end
+end
+
+M.fuzzy_search = function()
+  if is_updating() then
+    return
+  end
+  telescope(index)
 end
 
 return M
