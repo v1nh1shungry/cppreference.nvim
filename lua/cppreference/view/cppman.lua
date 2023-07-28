@@ -1,74 +1,4 @@
-local M = {}
-
-local index_path = vim.fn.stdpath('data') .. '/cppreference.json'
-local job = nil
-local index = nil
-local options = {
-  view = 'browser',
-  cppman = {
-    position = 'split',
-  },
-}
-
-local log = function(msg, level)
-  vim.notify(msg, level, { title = 'cppreference.nvim' })
-end
-local info = function(msg) log(msg, vim.log.levels.INFO) end
-local error = function(msg) log(msg, vim.log.levels.ERROR) end
-
-local is_updating = function()
-  if job and not job:is_closing() then
-    info('Fetching the latest index, please wait until it finishes')
-    return true
-  end
-  return false
-end
-
-M.update_index = function(on_exit)
-  if is_updating() then
-    return
-  end
-  if vim.fn.executable('curl') == 0 then
-    error('Requires `curl` to fetch the index')
-    return
-  end
-  info('Fetching the latest index...')
-  job = vim.system({
-    'curl',
-    'https://cdn.jsdelivr.net/npm/@gytx/cppreference-index/dist/generated.json',
-    '--output',
-    index_path,
-  }, {}, function(res)
-    if res.code == 0 then
-      info('Successfully fetch the latest index')
-      if type(on_exit) == 'function' then
-        on_exit()
-      end
-    else
-      error("Can't fetch the index:\n" .. res.stderr)
-    end
-  end)
-end
-
-M.setup = function(opts)
-  options = vim.tbl_deep_extend('force', options, opts or {})
-  local setup = function()
-    index = vim.json.decode(vim.fn.join(vim.fn.readfile(index_path), '\n'))
-  end
-  if vim.fn.filereadable(index_path) == 0 then
-    M.update_index(vim.schedule_wrap(setup))
-  else
-    setup()
-  end
-end
-
-local open_browser = function(url)
-  if vim.fn.executable('xdg-open') == 0 then
-    error('Requires `xdg-open` to open the page in the default browser')
-  else
-    vim.system { 'xdg-open', url }
-  end
-end
+local config = require('cppreference.config')
 
 local function cppman(keyword)
   if vim.fn.executable('cppman') == 0 then
@@ -86,7 +16,7 @@ local function cppman(keyword)
       return
     end
 
-    if options.cppman.position == 'tab' then
+    if config.options.cppman.position == 'tab' then
       vim.cmd 'tab split'
     else
       local avail = -1
@@ -99,7 +29,7 @@ local function cppman(keyword)
       if avail > 0 then
         vim.cmd.exec("'" .. avail .. " wincmd w'")
       else
-        if options.cppman.position == 'vsplit' then
+        if config.options.cppman.position == 'vsplit' then
           vim.cmd.vsplit()
         else
           vim.cmd.split()
@@ -176,72 +106,4 @@ local function cppman(keyword)
   end))
 end
 
-local display = function(entry)
-  if options.view == 'browser' then
-    open_browser('https://en.cppreference.com/w/' .. entry.link)
-  else
-    cppman(entry.name)
-  end
-end
-
-local telescope = function(entries)
-  local pickers = require('telescope.pickers')
-  local finders = require('telescope.finders')
-  local conf = require('telescope.config').values
-  local actions = require('telescope.actions')
-  local action_state = require('telescope.actions.state')
-  local opts = require('telescope.themes').get_dropdown {}
-
-  pickers.new(opts, {
-    prompt_title = 'cppreference',
-    sorter = conf.generic_sorter(opts),
-    finder = finders.new_table {
-      results = entries,
-      entry_maker = function(entry)
-        return {
-          value = entry.link,
-          display = entry.name,
-          ordinal = entry.name,
-        }
-      end,
-    },
-    attach_mappings = function(prompt_bufnr, _)
-      actions.select_default:replace(function()
-        actions.close(prompt_bufnr)
-        local selection = action_state.get_selected_entry()
-        display({ name = selection.display, link = selection.value })
-      end)
-      return true
-    end,
-  }):find()
-end
-
-M.open = function(keyword)
-  if is_updating() then
-    return
-  end
-  keyword = keyword or ''
-  local entries = {}
-  for _, entry in ipairs(index) do
-    if string.find(entry.name, keyword) then
-      entries[#entries + 1] = entry
-    end
-  end
-  if #entries == 0 then
-    error("No manual for '" .. keyword .. "'")
-    return
-  elseif #entries == 1 then
-    display({ name = entries[1].name, link = entries[1].link })
-  else
-    telescope(entries)
-  end
-end
-
-M.fuzzy_search = function()
-  if is_updating() then
-    return
-  end
-  telescope(index)
-end
-
-return M
+return cppman

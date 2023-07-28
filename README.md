@@ -74,19 +74,27 @@ require('cppreference').setup {
 
 - [x] `require('cppreference').open(word)`: directly offer the keyword, useful to play with `expand('<cword>')`
 
-- [ ] Windows support
+- [ ] ~~Windows support~~ Cross-platform support: I don't use neovim in Windows (WSL instead), and I don't even own a Mac. So I agree this is an important feature but I'm not able to achieve it currently.
+
+  - [ ] Linux (WSL included)
+
+  - [ ] Windows
+
+  - [ ] MacOS
 
 - [x] Seriously it's much better to open [cppman](https://github.com/aitjcize/cppman) instead of browser, but it's kind of hard to hack in.
   
   - [x] ~~`keywordprg` and~~ the `K` key support
 
-- [ ] Fuzzy search: better sorter
+- [ ] Fuzzy search: better sorter, use `vim.ui.select` when `telescope.nvim` is absent
 
 - [ ] Compatibility check: for example, `statuscolumn` is available in a recent version.
 
 - [ ] Hide the buffer instead of wiping it when the manpage is no longer displayed, so that we can have a browse history in the jumplist.
 
 - [x] cppman position config support: `split`, `vsplit`, `tab`
+
+- [ ] Seriously cppman and browser just share different index. Currently both use [Guyutongxue/cppreference-index](https://github.com/Guyutongxue/cppreference-index). It's better to have cppman use [aitjcize/cppman/cppman/lib/index.db](https://github.com/aitjcize/cppman/blob/master/cppman/lib/index.db) instead, which requires [kkharji/sqlite.lua](https://github.com/kkharji/sqlite.lua) to query, sigh.
 
 # Credits
 
