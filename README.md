@@ -2,19 +2,17 @@
 
 A deadly silly plugin for searching and viewing [cppreference](http://cppreference.com/) pages in your favorite editor.
 
-**NOTE**: currently only Linux is supported!
+**NOTE**: currently only Linux (WSL included) is supported!
 
 # Showcase
 
 * Browser:
 
-![](https://user-images.githubusercontent.com/98312435/256507363-f7e826b7-a340-4e42-ade6-669d569853c0.gif)
+![](https://user-images.githubusercontent.com/98312435/256899350-4350d581-2eee-4d24-bac2-959d6de6bca1.gif)
 
 * [cppman](https://github.com/aitjcize/cppman):
 
-![](https://user-images.githubusercontent.com/98312435/256728366-b409f9a0-2583-4e0e-b583-7c86a24c353f.gif)
-
-**NOTE**: the GIF is kind of broken because of the screen recorder. I may fix it when available.
+![](https://user-images.githubusercontent.com/98312435/256899443-e7d06f27-8e8d-40cd-ad2a-6dfdadd67603.gif)
 
 # Features
 
@@ -76,7 +74,9 @@ require('cppreference').setup {
 
 - [ ] ~~Windows support~~ Cross-platform support: I don't use neovim in Windows (WSL instead), and I don't even own a Mac. So I agree this is an important feature but I'm not able to achieve it currently.
 
-  - [ ] Linux (WSL included)
+  - [ ] Check unsupported platform
+
+  - [x] Linux (WSL included)
 
   - [ ] Windows
 

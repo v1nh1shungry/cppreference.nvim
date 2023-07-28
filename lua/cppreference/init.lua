@@ -1,15 +1,11 @@
 local M = {}
+local info = require('cppreference.utils').info
+local error = require('cppreference.utils').error
 local search = require('cppreference.search')
 
 local index_path = vim.fn.stdpath('data') .. '/cppreference.json'
 local job = nil
 local index = nil
-
-local log = function(msg, level)
-  vim.notify(msg, level, { title = 'cppreference.nvim' })
-end
-local info = function(msg) log(msg, vim.log.levels.INFO) end
-local error = function(msg) log(msg, vim.log.levels.ERROR) end
 
 local is_updating = function()
   if job and not job:is_closing() then

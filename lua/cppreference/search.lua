@@ -23,7 +23,7 @@ local telescope = function(entries)
       actions.select_default:replace(function()
         actions.close(prompt_bufnr)
         local selection = action_state.get_selected_entry()
-        require('cppreference.view')({ name = selection.display, link = selection.link })
+        require('cppreference.view')({ name = selection.display, link = selection.value })
       end)
       return true
     end,

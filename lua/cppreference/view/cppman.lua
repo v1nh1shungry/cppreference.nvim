@@ -1,4 +1,5 @@
 local config = require('cppreference.config')
+local error = require('cppreference.utils').error
 
 local function cppman(keyword)
   if vim.fn.executable('cppman') == 0 then
