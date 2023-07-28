@@ -119,7 +119,7 @@ local function cppman(keyword)
     winset('relativenumber', false)
     winset('signcolumn', 'no')
     winset('colorcolumn', '0')
-    vim.cmd 'normal! gg'
+    winset('statuscolumn', '')
 
     -- set up highlight
     -- https://github.com/aitjcize/cppman/blob/master/cppman/lib/cppman.vim

@@ -77,6 +77,12 @@ require('cppreference').setup {
 
 - [ ] Fuzzy search: better sorter
 
+- [ ] Compatibility check: for example, `statuscolumn` is available in a recent version.
+
+- [ ] Hide the buffer instead of wiping it when the manpage is no longer displayed, so that we can have a browse history in the jumplist.
+
+- [ ] cppman position config support: `split`, `vsplit`, `tab`
+
 # Credits
 
 * [Guyutongxue/VSC_CppReference](https://github.com/Guyutongxue/VSC_CppReference): the plugin uses the index from [Guyutongxue/cppreference-index](https://github.com/Guyutongxue/cppreference-index).
