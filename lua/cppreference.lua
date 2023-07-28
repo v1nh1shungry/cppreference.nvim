@@ -149,6 +149,14 @@ local function cppman(keyword)
     ]]
 
     vim.keymap.set('n', 'K', function() cppman(vim.fn.expand('<cword>')) end, { buffer = buf })
+    vim.keymap.set('v', 'K', function()
+      -- https://github.com/nvim-telescope/telescope.nvim/issues/1923#issuecomment-1122642431
+      vim.cmd 'noau normal! "vy"'
+      local text = vim.fn.getreg 'v'
+      vim.fn.setreg('v', {})
+      text = string.gsub(text, '\n', '')
+      cppman(text)
+    end, { buffer = buf })
   end))
 end
 
