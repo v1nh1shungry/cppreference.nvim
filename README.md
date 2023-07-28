@@ -48,6 +48,11 @@ require('cppreference').setup {
   -- viewer to display the cppreference page
   -- can be 'browser' or 'cppman'
   view = 'browser',
+  cppman = {
+    -- where the cppman window displays
+    -- can be 'split', 'vsplit' or 'tab'
+    position = 'split',
+  },
 }
 ```
 
@@ -61,7 +66,7 @@ require('cppreference').setup {
 
 # FAQ ~~(actually nobody asks)~~
 
-* **Q:** An entry exists in the fuzzy search pane, but `cppman` says it can't locate it?
+* **Q:** An entry exists in the fuzzy search pane, but `cppman` says **NO**?
 
   **A:** The plugin eventually relies on `cppman` to locate the page if you use `cppman` as the viewer, and `cppman` can only locate objects own an individual page. In this case you have to use the browser to open the URL, which can be found in the index file.
 
@@ -73,7 +78,7 @@ require('cppreference').setup {
 
 - [x] Seriously it's much better to open [cppman](https://github.com/aitjcize/cppman) instead of browser, but it's kind of hard to hack in.
   
-  - [x] `keywordprg` and the `K` key support
+  - [x] ~~`keywordprg` and~~ the `K` key support
 
 - [ ] Fuzzy search: better sorter
 
@@ -81,7 +86,7 @@ require('cppreference').setup {
 
 - [ ] Hide the buffer instead of wiping it when the manpage is no longer displayed, so that we can have a browse history in the jumplist.
 
-- [ ] cppman position config support: `split`, `vsplit`, `tab`
+- [x] cppman position config support: `split`, `vsplit`, `tab`
 
 # Credits
 
