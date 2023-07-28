@@ -56,7 +56,7 @@ local open_browser = function(url)
   end
 end
 
-local cppman = function(keyword)
+local function cppman(keyword)
   if vim.fn.executable('cppman') == 0 then
     error('`cppman` is not available in $PATH')
     return
@@ -85,8 +85,20 @@ local cppman = function(keyword)
     vim.api.nvim_buf_set_name(buf, 'man://cppman/' .. keyword)
     bufset('readonly', true)
     bufset('modifiable', false)
+    vim.fn.setbufvar(buf, 'cppman', true)
 
-    vim.cmd.split()
+    local avail = -1
+    for i = 1, vim.fn.winnr('$') do
+      local nr = vim.fn.winbufnr(i)
+      if vim.fn.getbufvar(nr, 'cppman', '') ~= '' then
+        avail = i
+      end
+    end
+    if avail > 0 then
+      vim.cmd.exec("'" .. avail .. " wincmd w'")
+    else
+      vim.cmd.split()
+    end
     local win = vim.api.nvim_get_current_win()
     local winset = function(name, value)
       vim.api.nvim_set_option_value(name, value, { win = win })
@@ -121,6 +133,8 @@ local cppman = function(keyword)
   hi def link manSubHeading      Function
   hi def link manCFuncDefinition Function
   ]]
+
+  vim.keymap.set('n', 'K', function() cppman(vim.fn.expand('<cword>')) end)
   end))
 end
 

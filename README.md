@@ -73,7 +73,7 @@ require('cppreference').setup {
 
 - [x] Seriously it's much better to open [cppman](https://github.com/aitjcize/cppman) instead of browser, but it's kind of hard to hack in.
   
-  - [ ] `keywordprg` and the `K` key support
+  - [x] `keywordprg` and the `K` key support
 
 - [ ] Fuzzy search: better sorter
 
