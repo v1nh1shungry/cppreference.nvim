@@ -122,16 +122,16 @@ local function cppman(keyword)
     vim.cmd 'normal! gg'
 
     -- set up highlight
-    -- https://github.com/skywind3000/vim-cppman/blob/master/plugin/cppman.vim
+    -- https://github.com/aitjcize/cppman/blob/master/cppman/lib/cppman.vim
     vim.cmd [[
     syntax clear
     syntax case ignore
-    syntax match manReference       "[a-z_:+-\*][a-z_:+-~!\*<>]\+([1-9][a-z]\=)"
-    syntax match manTitle           "^\w.\+([0-9]\+[a-z]\=).*"
-    syntax match manSectionHeading  "^[a-z][a-z_ \-:]*[a-z]$"
-    syntax match manSubHeading      "^\s\{3\}[a-z][a-z ]*[a-z]$"
-    syntax match manOptionDesc      "^\s*[+-][a-z0-9]\S*"
-    syntax match manLongOptionDesc  "^\s*--[a-z0-9-]\S*"
+    syntax match  manReference       "[a-z_:+-\*][a-z_:+-~!\*<>()]\+ ([1-9][a-z]\=)"
+    syntax match  manTitle           "^\w.\+([0-9]\+[a-z]\=).*"
+    syntax match  manSectionHeading  "^[a-z][a-z_ \-:]*[a-z]$"
+    syntax match  manSubHeading      "^\s\{3\}[a-z][a-z ]*[a-z]$"
+    syntax match  manOptionDesc      "^\s*[+-][a-z0-9]\S*"
+    syntax match  manLongOptionDesc  "^\s*--[a-z0-9-]\S*"
 
     syntax include @cppCode runtime! syntax/cpp.vim
     syntax match manCFuncDefinition  display "\<\h\w*\>\s*("me=e-1 contained
