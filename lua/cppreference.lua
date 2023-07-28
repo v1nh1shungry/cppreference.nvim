@@ -13,13 +13,24 @@ end
 local info = function(msg) log(msg, vim.log.levels.INFO) end
 local error = function(msg) log(msg, vim.log.levels.ERROR) end
 
+local is_updating = function()
+  if job and not job:is_closing() then
+    info('Fetching the latest index, please wait until it finishes')
+    return true
+  end
+  return false
+end
+
 M.update_index = function(on_exit)
+  if is_updating() then
+    return
+  end
   if vim.fn.executable('curl') == 0 then
     error('Requires `curl` to fetch the index')
     return
   end
   info('Fetching the latest index...')
-  return vim.system({
+  job = vim.system({
     'curl',
     'https://cdn.jsdelivr.net/npm/@gytx/cppreference-index/dist/generated.json',
     '--output',
@@ -42,7 +53,7 @@ M.setup = function(opts)
     index = vim.json.decode(vim.fn.join(vim.fn.readfile(index_path), '\n'))
   end
   if vim.fn.filereadable(index_path) == 0 then
-    job = M.update_index(vim.schedule_wrap(setup))
+    M.update_index(vim.schedule_wrap(setup))
   else
     setup()
   end
@@ -113,28 +124,31 @@ local function cppman(keyword)
     -- set up highlight
     -- https://github.com/skywind3000/vim-cppman/blob/master/plugin/cppman.vim
     vim.cmd [[
-  syntax clear
-  syntax case ignore
-  syntax match manReference       "[a-z_:+-\*][a-z_:+-~!\*<>]\+([1-9][a-z]\=)"
-  syntax match manTitle           "^\w.\+([0-9]\+[a-z]\=).*"
-  syntax match manSectionHeading  "^[a-z][a-z_ \-:]*[a-z]$"
-  syntax match manSubHeading      "^\s\{3\}[a-z][a-z ]*[a-z]$"
-  syntax match manOptionDesc      "^\s*[+-][a-z0-9]\S*"
-  syntax match manLongOptionDesc  "^\s*--[a-z0-9-]\S*"
-  syntax include @cppCode runtime! syntax/cpp.vim
-  syntax match manCFuncDefinition  display "\<\h\w*\>\s*("me=e-1 contained
-  syntax region manSynopsis start="^SYNOPSIS"hs=s+8 end="^\u\+\s*$"me=e-12 keepend contains=manSectionHeading,@cppCode,manCFuncDefinition
-  syntax region manSynopsis start="^EXAMPLE"hs=s+7 end="^       [^ ]"he=s-1 keepend contains=manSectionHeading,@cppCode,manCFuncDefinition
-  hi def link manTitle    Title
-  hi def link manSectionHeading  Statement
-  hi def link manOptionDesc    Constant
-  hi def link manLongOptionDesc  Constant
-  hi def link manReference    PreProc
-  hi def link manSubHeading      Function
-  hi def link manCFuncDefinition Function
-  ]]
+    syntax clear
+    syntax case ignore
+    syntax match manReference       "[a-z_:+-\*][a-z_:+-~!\*<>]\+([1-9][a-z]\=)"
+    syntax match manTitle           "^\w.\+([0-9]\+[a-z]\=).*"
+    syntax match manSectionHeading  "^[a-z][a-z_ \-:]*[a-z]$"
+    syntax match manSubHeading      "^\s\{3\}[a-z][a-z ]*[a-z]$"
+    syntax match manOptionDesc      "^\s*[+-][a-z0-9]\S*"
+    syntax match manLongOptionDesc  "^\s*--[a-z0-9-]\S*"
 
-  vim.keymap.set('n', 'K', function() cppman(vim.fn.expand('<cword>')) end)
+    syntax include @cppCode runtime! syntax/cpp.vim
+    syntax match manCFuncDefinition  display "\<\h\w*\>\s*("me=e-1 contained
+
+    syntax region manSynopsis start="^SYNOPSIS"hs=s+8 end="^\u\+\s*$"me=e-12 keepend contains=manSectionHeading,@cppCode,manCFuncDefinition
+    syntax region manSynopsis start="^EXAMPLE"hs=s+7 end="^       [^ ]"he=s-1 keepend contains=manSectionHeading,@cppCode,manCFuncDefinition
+
+    hi def link manTitle           Title
+    hi def link manSectionHeading  Statement
+    hi def link manOptionDesc      Constant
+    hi def link manLongOptionDesc  Constant
+    hi def link manReference       PreProc
+    hi def link manSubHeading      Function
+    hi def link manCFuncDefinition Function
+    ]]
+
+    vim.keymap.set('n', 'K', function() cppman(vim.fn.expand('<cword>')) end)
   end))
 end
 
@@ -176,16 +190,6 @@ local telescope = function(entries)
       return true
     end,
   }):find()
-end
-
-local is_updating = function()
-  if job then
-    if not job:is_closing() then
-      info('Fetching the latest index, please wait until it finishes')
-      return true
-    end
-  end
-  return false
 end
 
 M.open = function(keyword)
