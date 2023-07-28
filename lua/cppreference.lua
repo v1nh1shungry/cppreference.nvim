@@ -88,7 +88,7 @@ local function cppman(keyword)
     local bufset = function(name, value) vim.api.nvim_set_option_value(name, value, { buf = buf }) end
     bufset('buftype', 'nofile')
     bufset('swapfile', false)
-    bufset('bufhidden', 'delete')
+    bufset('bufhidden', 'wipe')
     bufset('ft', 'man')
     bufset('readonly', false)
     bufset('modifiable', true)
@@ -148,7 +148,7 @@ local function cppman(keyword)
     hi def link manCFuncDefinition Function
     ]]
 
-    vim.keymap.set('n', 'K', function() cppman(vim.fn.expand('<cword>')) end)
+    vim.keymap.set('n', 'K', function() cppman(vim.fn.expand('<cword>')) end, { buffer = buf })
   end))
 end
 
