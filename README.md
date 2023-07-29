@@ -1,5 +1,7 @@
 # cppreference.nvim
 
+**Attension! This repository is about to be archived soon. I know it's ridiculous to deprecate a plugin that was just created YESTERDAY. But I do realize that let the browser and cppman in the same plugin is really a bad idea. And I prefer cppman, why not? So there is a successor, [v1nh1shungry/cppman.nvim](https://github.com/v1nh1shungry/cppman.nvim), by me too. Seriously I promise I will keep this one as long as possible 😅. However, if you have any idea about this plugin, please feel free contact me. Thank you for taking a look at this silly plugin!**
+
 A deadly silly plugin for searching and viewing [cppreference](http://cppreference.com/) pages in your favorite editor.
 
 **NOTE**: currently only Linux (WSL included) is supported!
